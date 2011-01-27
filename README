@@ -1,0 +1,12 @@
+Omnifind
+========
+
+A wrapper for making requests to an Omnifind server and parsing the response
+
+Example
+=======
+
+Omnisearch.new(params[:query], 'intranet_collection', :fields => 'author')
+
+
+Copyright (c) 2011 ASEE, released under the MIT license
