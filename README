@@ -6,7 +6,20 @@ A wrapper for making requests to an Omnifind server and parsing the response
 Example
 =======
 
-Omnisearch.new(params[:query], 'intranet_collection', :fields => 'author')
+# The new method accepts a search term, a collection name, and an options hash.
+@results = Omnisearch.new(params[:query], 'intranet_collection', :fields => 'author')
+
+@results.estimated_results # => 143
+@results.start_index # => 1
+@results.items_per_page # => 10
+@results.entries.first =>
+      # {:summary=>
+      #   "<SPAN class=\"ellipsis\">... </SPAN> <SPAN class=\"highlight\"><SPAN class=\"hlTerm0\">TEST</SPAN></SPAN> DATA for the purposes of illustration <SPAN class=\"ellipsis\">... </SPAN>",
+      #  :title=>"Test document",
+      #  :url=>"http://intranet.your.org/2004/april/813.pdf",
+      #  :fields=>{"author"=>"Mr. Bacom"},
+      #  :relevance=>"0.21"}
+
 
 
 Copyright (c) 2011 ASEE, released under the MIT license
