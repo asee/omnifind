@@ -3,4 +3,5 @@
 require 'rubygems'
 require 'open-uri'
 require 'nokogiri' 
+require 'will_paginate'
 require 'cgi' 
