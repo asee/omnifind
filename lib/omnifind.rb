@@ -7,8 +7,7 @@ class Omnifind
     validate_init_options(opts)
     
     # Default some options
-    opts.reverse_merge!(:items_per_page => 10)
-    opts[:items_per_page] = opts[:items_per_page].to_i
+    @items_per_page = (opts[:items_per_page].to_i > 0) ? opts[:items_per_page].to_i : 10
     
     @entries = []
     
@@ -41,7 +40,9 @@ class Omnifind
       @total_results = doc.xpath("//opensearch:totalResults").text.to_i
       @estimated_results = doc.xpath("//omnifind:estimatedResults").text.to_i
       @start_index = doc.xpath("//opensearch:startIndex").text.to_i
-      @items_per_page = doc.xpath("//opensearch:itemsPerPage").text.to_i
+      # This will get set to either the requested items per page, or the number of items in the page, whichever is less.
+      # Having it as the lesser amount will throw off will paginate calculations, so don't read it in.
+      # @items_per_page = doc.xpath("//opensearch:itemsPerPage").text.to_i
     
       @first_query = doc.css("link[rel='first']").first.try(:attributes).try(:[], "href").try(:text)
       @next_query = doc.css("link[rel='next']").first.try(:attributes).try(:[], "href").try(:text)
@@ -86,7 +87,7 @@ class Omnifind
   end
   
   def last_start_index
-    (num_results / items_per_page) * items_per_page
+    (total_results / items_per_page) * items_per_page
   end
   
   
@@ -99,29 +100,7 @@ class Omnifind
   end
   
   def total_pages
-     num_results / items_per_page
-  end
-  
-  def num_results
-    (estimated_results || total_results)
-  end
-  
-  def page_entries_info(options = {})
-    entry_name = options[:entry_name] || "result"
-    
-    if total_pages < 2
-      case entries.size
-      when 0; "No #{entry_name.pluralize} found"
-      when 1; "Displaying <b>1</b> #{entry_name}"
-      else;   "Displaying <b>all #{entries.size}</b> #{entry_name.pluralize}"
-      end
-    else
-      %{Displaying #{entry_name.pluralize} <b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b> in total} % [
-        start_index,
-        start_index + entries.length - 1,
-        num_results
-      ]
-    end
+     total_results / items_per_page
   end
   
   def paginate
@@ -135,7 +114,7 @@ class Omnifind
     WillPaginate::Collection.create(
         page_num,
         (items_per_page == 0 ? 10 : items_per_page),
-        num_results
+        total_results
     ) { |pager|
       pager.replace entries
     }    
