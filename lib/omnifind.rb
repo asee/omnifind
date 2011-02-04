@@ -24,7 +24,7 @@ class Omnifind
     @request_url << "/api/search?index=#{CGI.escape(opts[:index])}&query=#{CGI.escape(opts[:query])}&queryTimeout=3000&results=#{opts[:items_per_page]}"
     
     if opts[:fields].present?
-      fields = Array(opts[:fields]).join("|")
+      fields = Array(opts[:fields]).join(":")
       @request_url << "&fields=#{CGI.escape(fields)}"
     end
     
