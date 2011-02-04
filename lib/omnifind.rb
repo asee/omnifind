@@ -4,12 +4,12 @@ class Omnifind
   attr_accessor :total_results, :estimated_results, :start_index, :items_per_page, :first_query, :next_query, :last_query, :previous_query, :entries, :error, :request_url
   
   def initialize(opts = {})
-    validate_init_options(opts)
+    @entries = []
     
+    validate_init_options(opts)
+
     # Default some options
     @items_per_page = (opts[:items_per_page].to_i > 0) ? opts[:items_per_page].to_i : 10
-    
-    @entries = []
     
     @request_url = ''
     @request_url << (opts.delete(:protocol) || 'http')
