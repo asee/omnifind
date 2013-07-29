@@ -124,5 +124,3 @@ class Omnifind
   
   
 end
-
-# s = Omnisearch.new('test', 'jee.org', :fields => "author")
